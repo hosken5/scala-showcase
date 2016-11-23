@@ -31,6 +31,10 @@ dependencies {
 }
 */
 
+task "createDirs" << {
+    sourceSets*.scala.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
 
 apply plugin: 'scala'
 
@@ -45,7 +49,7 @@ repositories{
 
 dependencies{
     compile 'org.slf4j:slf4j-api:1.7.5'
-    compile "org.scala-lang:scala-library:2.10.1"
+    compile "org.scala-lang:scala-library:2.12.0"
     testCompile "junit:junit:4.11"
 }
 
