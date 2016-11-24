@@ -3,7 +3,9 @@
   */
 package  com.yimei
 
+import java.io.PrintWriter
 import java.util.Date
+import javax.swing.JFrame
 
 
 class Person (var name :String , var age: Int ) {
@@ -59,7 +61,7 @@ trait Logged {
 }
 
 trait Consolelogger  extends  Logged {
-  override def log (msg:String){println(msg)}
+  override def log (msg:String){ super.log(msg);println(msg)}
 }
 
 trait TimestampLogger extends  Logged {
@@ -79,6 +81,37 @@ trait ShortLogger extends  Logged {
     )
   }
 }
+
+trait FileLogger extends Logged {
+  val filename :String ;
+  val out =  new PrintWriter(filename) ;
+  out.println("#"+new Date().toString)
+  override def log (msg:String ): Unit ={
+    super.log(msg);
+    out.println(msg);
+    out.flush() ;
+  }
+}
+
+trait LoggedException extends Exception with  Logged {
+  def log(){log(getMessage)}
+}
+
+trait LoggedException1 extends  Logged {
+  this:Exception =>
+  def log() {log(getMessage)}
+}
+
+
+
+
+
+//
+//class  UnHappyException (override  val desc:String ,override  val price :Double ) extends Item(desc,price ) with  LoggedException {
+// override  def getMessage() = "arggh!"
+//}
+
+
 class Item (val desc :String , val price :Double ) extends  Logged{
 //  log("object created")
   def hello (): Unit ={
@@ -92,18 +125,30 @@ class Item (val desc :String , val price :Double ) extends  Logged{
   }
 }
 
-object ExtendsScala{
-  def main(args : Array[ String ]): Unit ={
-    val item  =  new Item("desc",13.22) with Consolelogger with ShortLogger{
-      val maxLength:Int = 11 ;
-    }
-    item.hello()
-    val item1  =  new Item("desc",13.2) with ShortLogger with Consolelogger{
-      val maxLength:Int = 6 ;
-    }
-  }
+
+
+class Self_type{
+  def getMessage() = "Self_type"
 }
 
+object ExtendsScala{
+  def main(args : Array[ String ]): Unit ={
+//    val item  =  new {
+//        val filename = "console.log "
+//        val maxLength:Int = 11
+//      }
+//      with Item("desc",13.22)
+//      with FileLogger
+//      with Consolelogger
+//      with ShortLogger{
+//    }
+//    item.hello()
+//    new UnHappyException("1",1.1);
 
+//    new JFrame() with LoggedException ;
 
+//    new  Self_type  with LoggedException1 ;
+//    new  Self_type  with LoggedException2 ;
 
+  }
+}
